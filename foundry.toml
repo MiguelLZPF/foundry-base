@@ -14,9 +14,11 @@ tx_origin = '0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38'
 initial_balance = '0xffffffffffffffffffffffff'
 
 remappings = [
-    "@src/=src/",
-    "@interfaces/=src/interfaces/",
-    "@script/=script/",
-    "@lib/=lib/",
-    "@test/=test/",
+  "@src/=src/",
+  "@interfaces/=src/interfaces/",
+  "@script/=script/",
+  "@lib/=lib/",
+  "@test/=test/",
+  "@openzeppelin/contracts/=lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/contracts/",
+  "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
 ]
