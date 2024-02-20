@@ -13,6 +13,9 @@ sender = '0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38'
 tx_origin = '0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38'
 initial_balance = '0xffffffffffffffffffffffff'
 
+build_info = true
+extra_output = ["storageLayout"]
+
 remappings = [
   # Foundry remappings
   "@src/=src/",
