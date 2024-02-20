@@ -1,0 +1,22 @@
+#* See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+## Sets the concrete solc version to use, this overrides the `auto_detect_solc` value
+solc = '0.8.24'
+# auto_detect_solc = true
+optimizer = true
+optimizer_runs = 20_000
+# These are the default callers, generated using `address(uint160(uint256(keccak256("foundry default caller"))))`
+sender = '0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38'
+tx_origin = '0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38'
+initial_balance = '0xffffffffffffffffffffffff'
+
+remappings = [
+    "@src/=src/",
+    "@interfaces/=src/interfaces/",
+    "@script/=script/",
+    "@lib/=lib/",
+    "@test/=test/",
+]
