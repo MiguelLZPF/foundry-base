@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
 import {Storage, IStorage, IPayableOwner} from "@src/Storage.sol";
-import {StorageDeploy} from "@script/Storage.s.sol";
+import {DeployStorage} from "@script/DeployStorage.s.sol";
 
 contract StorageTest is Test {
     // Constants
@@ -18,9 +18,12 @@ contract StorageTest is Test {
     function setUp() public {
         // Transfer some ether to user
         vm.deal(user, DEFAULT_USER_BALANCE);
-        myStorage = new StorageDeploy().run(INIT_AMOUNT);
+        // Deploy the contract
+        myStorage = new DeployStorage().run(INIT_AMOUNT);
+        // Check the initial state
         assertEq(myStorage.retrieve(), INIT_AMOUNT);
         assertEq(myStorage.hasRole(bytes32(0), address(admin)), true);
+        assertEq(myStorage.hasRole(bytes32(0), address(user)), false);
     }
 
     function test_Store() public {
