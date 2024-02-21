@@ -1,0 +1,11 @@
+{
+  "ChainId": 31337,
+  "contracts": {
+    "StorageTestss": {
+      "0x1234": {
+        "address": "0x1234",
+        "name": "StorageTestss"
+      }
+    }
+  }
+}
