@@ -1,11 +1,13 @@
 {
-  "ChainId": 31337,
-  "contracts": {
+  "666": {
     "StorageTestss": {
-      "0x1234": {
-        "address": "0x1234",
-        "name": "StorageTestss"
-      }
+      "bytecodeHash": "0x1ac7d1b81b7ba1025b36ccb86723da6ee5a87259f1c2fd5abe69d3200b512ec8",
+      "chainId": 666,
+      "logicAddr": "0x0000000000000000000000000000000000000005",
+      "logicDeployTxHash": "0x360e4da74403d0ddbe1357d33069aea341fe6c32e997ebb890be162ec7c6434c",
+      "name": "Storage",
+      "proxyAddr": "0x0000000000000000000000000000000000000000",
+      "tag": "StorageTestss"
     }
   }
 }
