@@ -5,6 +5,7 @@ out = "out"
 libs = ["lib"]
 ## Sets the concrete solc version to use, this overrides the `auto_detect_solc` value
 solc = '0.8.24'
+evm_version = 'shanghai'
 # auto_detect_solc = true
 optimizer = true
 optimizer_runs = 20_000
