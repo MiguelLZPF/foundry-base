@@ -2,8 +2,11 @@
 pragma solidity ^0.8.24;
 
 import {Script, console} from "forge-std/Script.sol";
-import {Storage} from "@src/Storage.sol";
+import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
+import {StorageUpgr as Storage} from "@src/StorageUpgr.sol";
 import {Configuration, Deployment, DeploymentStoreInfo} from "@script/Configuration.s.sol";
+
+//* Reference: https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades
 
 /**
  * @title DeployCommand
@@ -15,10 +18,10 @@ struct DeployCommand {
 }
 
 /**
- * @title StorageScript
+ * @title StorageUpgrScript
  * @dev A script contract for deploying the Storage contract and storing its deployment information.
  */
-contract StorageScript is Script {
+contract StorageUpgrScript is Script {
   string private constant CONTRACT_NAME = "Storage";
   string private constant CONTRACT_FILE_NAME = "Storage.sol";
   Configuration config = new Configuration();
@@ -34,7 +37,12 @@ contract StorageScript is Script {
   ) external returns (Storage storage_, Deployment memory deployment) {
     // Only thing that is executed in the blockchain
     vm.startBroadcast();
-    storage_ = new Storage(command.initValue);
+    storage_ = Storage(
+      Upgrades.deployUUPSProxy(
+        CONTRACT_FILE_NAME,
+        abi.encodeCall(Storage.initialize, (command.initValue))
+      )
+    );
     vm.stopBroadcast();
     // Generate deployment data
     deployment = Deployment({
@@ -50,5 +58,11 @@ contract StorageScript is Script {
       config.storeDeployment(deployment);
     }
     return (storage_, deployment);
+  }
+
+  function upgrade(address proxy, string memory contractFileName) external {
+    vm.startBroadcast();
+    Upgrades.upgradeProxy(proxy, contractFileName, "");
+    vm.stopBroadcast();
   }
 }

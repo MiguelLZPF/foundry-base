@@ -4,14 +4,29 @@ pragma solidity ^0.8.24;
 import {Script, console} from "forge-std/Script.sol";
 import "forge-std/StdJson.sol";
 
+/**
+ * @title Deployment
+ * @dev Struct representing a deployment configuration.
+ */
 struct Deployment {
-  bytes32 bytecodeHash;
-  uint256 chainId;
-  address logicAddr;
-  bytes32 logicDeployTxHash;
-  string name;
-  address proxyAddr;
-  string tag;
+  bytes32 bytecodeHash; // Hash of the bytecode for the deployment.
+  uint256 chainId; // Chain ID where the deployment will take place.
+  address logicAddr; // Address of the logic contract.
+  // bytes32 logicDeployTxHash;
+  bytes32 name; // Name of the deployment.
+  address proxyAddr; // Address of the proxy contract.
+  bytes32 tag; // Tag associated with the deployment.
+}
+
+/**
+ * @title DeploymentStoreInfo
+ * @dev Struct representing a deploy command.
+ * @notice This struct represents a deploy command, which is used to store information about a deployment.
+ * It contains a flag indicating whether to store the deployment and a tag associated with the deployment.
+ */
+struct DeploymentStoreInfo {
+  bool store; // Flag indicating whether to store the deployment.
+  bytes32 tag; // Tag associated with the deployment.
 }
 
 contract Configuration is Script {
@@ -22,33 +37,23 @@ contract Configuration is Script {
    * @param deployment The deployment data to be stored.
    */
   function storeDeployment(Deployment calldata deployment) external {
-    // Deployment memory deploymentData = Deployment(
-    //   bytes32(keccak256("0x1234")),
-    //   666,
-    //   address(5),
-    //   bytes32(keccak256("0x1134")),
-    //   "Storage",
-    //   address(0),
-    //   "StorageTestss"
-    // );
     // Serialize the deployment
     string memory toBeDeployment = "deployment";
-    vm.serializeString(toBeDeployment, "tag", deployment.tag);
-    vm.serializeString(toBeDeployment, "name", deployment.name);
+    vm.serializeBytes32(toBeDeployment, "tag", deployment.tag);
+    vm.serializeBytes32(toBeDeployment, "name", deployment.name);
     vm.serializeAddress(toBeDeployment, "proxyAddr", deployment.proxyAddr);
     vm.serializeAddress(toBeDeployment, "logicAddr", deployment.logicAddr);
     vm.serializeUint(toBeDeployment, "chainId", deployment.chainId);
-    vm.serializeBytes32(toBeDeployment, "bytecodeHash", deployment.bytecodeHash);
     string memory serializedDeployment = vm.serializeBytes32(
       toBeDeployment,
-      "logicDeployTxHash",
-      deployment.logicDeployTxHash
+      "bytecodeHash",
+      deployment.bytecodeHash
     );
     // Serialize the deployment by tag
     string memory deploymentByTag = "serDeploymentByTag";
     string memory serDeploymentByTag = vm.serializeString(
       deploymentByTag,
-      deployment.tag,
+      vm.toString(deployment.tag),
       serializedDeployment
     );
     // Serialize the deployment by network
