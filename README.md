@@ -57,6 +57,12 @@ $ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --pri
 $ cast <subcommand>
 ```
 
+### Default Anvil Test Chain
+
+``` bash
+anvil --accounts $ACCOUNT_NUMBER --mnemonic $MNEMONIC --hardfork $HARDFORK --port $PORT --chain-id $CHAIN_ID --config-out $ANVIL_CONFIG_OUT
+```
+
 ### Help
 
 ```shell

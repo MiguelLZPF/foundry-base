@@ -6,7 +6,7 @@ import {Deployment, DeploymentStoreInfo} from "@script/Configuration.s.sol";
 import {StorageUpgr, IStorage, IPayableOwner} from "@src/StorageUpgr.sol";
 import {StorageUpgrScript, DeployCommand} from "@script/StorageUpgr.s.sol";
 
-contract StorageTest is Test {
+contract StorageUpgrTest is Test {
   // Constants
   uint256 private constant INIT_AMOUNT = 12 ether;
   address private constant DEFAULT_USER = address(10);
