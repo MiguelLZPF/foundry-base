@@ -16,6 +16,7 @@ struct Deployment {
   bytes32 name; // Name of the deployment.
   address proxyAddr; // Address of the proxy contract.
   bytes32 tag; // Tag associated with the deployment.
+  uint256 timestamp; // Timestamp of the deployment.
 }
 
 /**
@@ -32,6 +33,16 @@ struct DeploymentStoreInfo {
 contract Configuration is Script {
   using stdJson for string;
 
+  uint256 PORT = vm.envUint("PORT");
+  uint256 CHAIN_ID = vm.envUint("CHAIN_ID");
+  string HARDFORK = vm.envString("HARDFORK");
+  uint256 ACCOUNT_NUMBER = vm.envUint("ACCOUNT_NUMBER");
+  string MNEMONIC = vm.envString("MNEMONIC");
+  string ANVIL_CONFIG_OUT = vm.envString("ANVIL_CONFIG_OUT");
+  string LAST_DEPLOYMENT_PATH = vm.envString("LAST_DEPLOYMENT_PATH");
+
+  constructor() {}
+
   /**
    * @dev Stores the deployment information in a JSON file.
    * @param deployment The deployment data to be stored.
@@ -44,45 +55,41 @@ contract Configuration is Script {
     vm.serializeAddress(toBeDeployment, "proxyAddr", deployment.proxyAddr);
     vm.serializeAddress(toBeDeployment, "logicAddr", deployment.logicAddr);
     vm.serializeUint(toBeDeployment, "chainId", deployment.chainId);
+    vm.serializeBytes32(toBeDeployment, "timestamp", bytes32(deployment.timestamp));
     string memory serializedDeployment = vm.serializeBytes32(
       toBeDeployment,
       "bytecodeHash",
       deployment.bytecodeHash
     );
-    // Serialize the deployment by tag
-    string memory deploymentByTag = "serDeploymentByTag";
-    string memory serDeploymentByTag = vm.serializeString(
-      deploymentByTag,
-      vm.toString(deployment.tag),
-      serializedDeployment
-    );
-    // Serialize the deployment by network
-    string memory deploymentsByNetwork = "deploymentsByNetwork";
-    string memory serDeploymentsByNetwork = vm.serializeString(
-      deploymentsByNetwork,
-      vm.toString(deployment.chainId),
-      serDeploymentByTag
-    );
+    // // Serialize the deployment by tag
+    // string memory deploymentByTag = "serDeploymentByTag";
+    // string memory serDeploymentByTag = vm.serializeString(
+    //   deploymentByTag,
+    //   vm.toString(deployment.tag),
+    //   serializedDeployment
+    // );
+    // // Serialize the deployment by network
+    // string memory deploymentsByNetwork = "deploymentsByNetwork";
+    // string memory serDeploymentsByNetwork = vm.serializeString(
+    //   deploymentsByNetwork,
+    //   vm.toString(deployment.chainId),
+    //   serDeploymentByTag
+    // );
     // Write the deployment to the deployments.json file
-    vm.writeJson(serDeploymentsByNetwork, "./deployments.json");
+    vm.writeJson(serializedDeployment, LAST_DEPLOYMENT_PATH);
   }
 
   /**
-   * @dev Retrieves a deployment based on the chain ID and tag.
-   * @param chainId The chain ID of the deployment.
-   * @param tag The tag of the deployment.
-   * @return deployment The retrieved deployment.
+   * @dev Retrieves the deployment information.
+   * @return deployment The deployment information.
    */
-  function retrieveDeployment(
-    uint256 chainId,
-    string calldata tag
-  ) external view returns (Deployment memory deployment) {
+  function retrieveDeployment() external view returns (Deployment memory deployment) {
     // Read the deployments.json file
-    string memory serializedDeployment = vm.readFile("./deployments.json");
+    string memory serializedDeployments = vm.readFile(LAST_DEPLOYMENT_PATH);
     // Set the filter
-    string memory filter = string(abi.encodePacked(".", vm.toString(chainId), ".", tag));
+    // string memory filter = string(abi.encodePacked(".", vm.toString(chainId), ".", tag));
     // Search for the encoded deployment
-    bytes memory encDeployment = serializedDeployment.parseRaw(filter);
+    bytes memory encDeployment = serializedDeployments.parseRaw(".");
     // Decode the deployment and return it
     return abi.decode(encDeployment, (Deployment));
   }

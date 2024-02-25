@@ -2,8 +2,9 @@
 pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
+import {Deployment, DeploymentStoreInfo} from "@script/Configuration.s.sol";
 import {StorageUpgr, IStorage, IPayableOwner} from "@src/StorageUpgr.sol";
-import {DeployStorageUpgr} from "@script/DeployStorageUpgr.s.sol";
+import {StorageUpgrScript, DeployCommand} from "@script/StorageUpgr.s.sol";
 
 contract StorageTest is Test {
   // Constants
@@ -16,10 +17,16 @@ contract StorageTest is Test {
   address payable user = payable(DEFAULT_USER);
 
   function setUp() public {
+    Deployment memory deployment;
     // Transfer some ether to user
     vm.deal(user, DEFAULT_USER_BALANCE);
     // Deploy the contract
-    myStorage = new DeployStorageUpgr().run(INIT_AMOUNT);
+    (myStorage, deployment) = new StorageUpgrScript().deploy(
+      DeployCommand({
+        initValue: INIT_AMOUNT,
+        storeInfo: DeploymentStoreInfo({store: false, tag: bytes32(0)})
+      })
+    );
     // Check the initial state
     assertEq(myStorage.retrieve(), INIT_AMOUNT);
     assertEq(myStorage.hasRole(bytes32(0), address(admin)), true);
